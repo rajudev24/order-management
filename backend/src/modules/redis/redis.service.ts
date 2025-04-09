@@ -1,6 +1,6 @@
-import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { Redis } from 'ioredis';
+import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { Redis } from "ioredis";
 
 @Injectable()
 export class RedisService implements OnModuleInit, OnModuleDestroy {
@@ -10,21 +10,21 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
   onModuleInit() {
     this.redisClient = new Redis({
-      host: this.config.get('REDIS_HOST'),
-      port: this.config.get('REDIS_PORT'),
-      password: this.config.get('REDIS_PASS'),
+      host: this.config.get("REDIS_HOST"),
+      port: this.config.get("REDIS_PORT"),
+      password: this.config.get("REDIS_PASS"),
     });
 
-    this.redisClient.on('error', (e) => {
+    this.redisClient.on("error", (e) => {
       throw new Error(`Redis connection failed: ${e}`);
     });
 
-    this.redisClient.on('connect', function () {
-      console.log('Connected to the Redis Server');
+    this.redisClient.on("connect", function () {
+      console.log("Connected to the Redis Server");
     });
 
-    this.redisClient.on('ready', async function () {
-      console.log('Redis Instance is Ready!');
+    this.redisClient.on("ready", async function () {
+      console.log("Redis Instance is Ready!");
     });
 
     return this.redisClient;
@@ -52,6 +52,6 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     value: string,
     expiry: number,
   ): Promise<void> {
-    await this.redisClient.set(`${prefix}:${key}`, value, 'EX', expiry);
+    await this.redisClient.set(`${prefix}:${key}`, value, "EX", expiry);
   }
 }

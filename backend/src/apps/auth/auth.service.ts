@@ -1,25 +1,25 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/modules/prisma/prisma.service';
-import { RedisService } from 'src/modules/redis/redis.service';
-import { ActionLogger } from 'utils/action-logger';
-import { Decoder } from 'utils/decoder';
-import { Environment } from 'utils/env';
-import { ErrorLogger } from 'utils/error-logger';
-import { Jwt } from 'utils/jwt';
-import { AuthDto } from './auth.dto';
-import * as argon from 'argon2';
-import { Users } from '@prisma/client';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "src/modules/prisma/prisma.service";
+import { ActionLogger } from "utils/action-logger";
+import { Decoder } from "utils/decoder";
+import { Environment } from "utils/env";
+import { ErrorLogger } from "utils/error-logger";
+import { Jwt } from "utils/jwt";
+import { AuthDto } from "./auth.dto";
+import * as argon from "argon2";
+import { Users } from "@prisma/client";
+import { RedisService } from "../../modules/redis/redis.service";
 
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private readonly jwt: Jwt,
-    private redis: RedisService,
     private env: Environment,
     private decoder: Decoder,
     private errorlogger: ErrorLogger,
     private actionlogger: ActionLogger,
+    private redis: RedisService,
   ) {}
 
   async login(dto: AuthDto) {
@@ -28,10 +28,7 @@ export class AuthService {
         where: {
           OR: [
             {
-              email: dto.identifier,
-            },
-            {
-              phone: dto.identifier,
+              email: dto.email,
             },
           ],
         },
@@ -43,7 +40,7 @@ export class AuthService {
       if (!user) {
         return {
           status: 404,
-          message: 'User not found with provided credentials',
+          message: "User not found with provided credentials",
         };
       }
 
@@ -52,14 +49,14 @@ export class AuthService {
       if (!match) {
         return {
           status: 403,
-          message: 'Your password is incorrect',
+          message: "Your password is incorrect",
         };
       }
 
       if (user.isPasswordResetRequired) {
         return {
           status: 403,
-          message: 'Password reset required',
+          message: "Password reset required",
           data: {
             isPasswordResetRequired: user.isPasswordResetRequired,
           },
@@ -80,7 +77,7 @@ export class AuthService {
         });
         return {
           status: 403,
-          message: 'Password expired, please reset password',
+          message: "Password expired, please reset password",
         };
       }
 
@@ -93,9 +90,9 @@ export class AuthService {
       await this.actionlogger.logAction(
         {
           referenceId: null,
-          refereceType: 'AUTH_MANAGEMENT',
-          action: 'LOGIN',
-          context: 'Auth Service - login',
+          refereceType: "AUTH_MANAGEMENT",
+          action: "LOGIN",
+          context: "Auth Service - login",
           description: `${user.name} logged in`,
           additionalInfo: null,
         },
@@ -104,7 +101,7 @@ export class AuthService {
 
       return {
         status: 200,
-        message: 'Login successful',
+        message: "Login successful",
         data: {
           user,
           tokenId,
@@ -113,24 +110,24 @@ export class AuthService {
       };
     } catch (error) {
       return await this.errorlogger.errorlogger({
-        errorMessage: 'An error occurred while logging in',
+        errorMessage: "An error occurred while logging in",
         errorStack: error,
-        context: 'AuthService - login',
+        context: "AuthService - login",
       });
     }
   }
 
   async logout(token, refreshToken, issuer: Users) {
     try {
-      await this.redis.delete('USER-AUTH-TOKEN', token);
-      await this.redis.delete('USER-REFRESH-TOKEN', refreshToken);
+      await this.redis.delete("USER-AUTH-TOKEN", token);
+      await this.redis.delete("USER-REFRESH-TOKEN", refreshToken);
 
       await this.actionlogger.logAction(
         {
           referenceId: null,
-          refereceType: 'AUTH_MANAGEMENT',
-          action: 'LOGOUT',
-          context: 'Auth Service - logout',
+          refereceType: "AUTH_MANAGEMENT",
+          action: "LOGOUT",
+          context: "Auth Service - logout",
           description: `${issuer.name} logged out`,
           additionalInfo: null,
         },
@@ -139,13 +136,13 @@ export class AuthService {
 
       return {
         status: 200,
-        message: 'Logout successful',
+        message: "Logout successful",
       };
     } catch (error) {
       return await this.errorlogger.errorlogger({
-        errorMessage: 'An error occurred while logging out',
+        errorMessage: "An error occurred while logging out",
         errorStack: error,
-        context: 'AuthService - logout',
+        context: "AuthService - logout",
       });
     }
   }

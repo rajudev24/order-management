@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { RedisModule } from 'src/modules/redis/redis.module';
+import { Module } from "@nestjs/common";
+import { AuthController } from "./auth.controller";
+import { AuthService } from "./auth.service";
+import { RedisModule } from "../../modules/redis/redis.module";
 
 @Module({
   imports: [RedisModule],

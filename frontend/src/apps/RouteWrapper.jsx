@@ -1,7 +1,9 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import appRoutes from "../constants/AppRoutes";
-import ProtectedPage from "../components/Layouts/ProtectedPage";
 import NoPageFound from "../components/Global/NoPageFound";
+import { Suspense } from "react";
+import ProtectedLayout from "../../@manush/layouts/ProtectedLayout.jsx";
+import LoadingSpinner from "../components/Global/LoadingSpinner.jsx";
 
 const RouteWrapper = () => {
   return (
@@ -14,31 +16,31 @@ const RouteWrapper = () => {
       <Routes>
         {appRoutes.map((route) => {
           const { path, Element, isProtected, isIndexUrl } = route;
+
+          const LazyElement = (
+            <Suspense fallback={<LoadingSpinner />}>
+              <Element />
+            </Suspense>
+          );
+
           if (isProtected) {
             return (
-              <Route key={path}>
-                <Route
-                  index={isIndexUrl}
-                  path={path}
-                  element={
-                    <ProtectedPage>
-                      <Element />
-                    </ProtectedPage>
-                  }
-                />
+              <Route key={path} element={<ProtectedLayout />}>
+                <Route index={isIndexUrl} path={path} element={LazyElement} />
               </Route>
             );
           } else {
             return (
-              <Route key={path}>
-                <Route index={isIndexUrl} path={path} element={<Element />} />
-              </Route>
+              <Route
+                key={path}
+                index={isIndexUrl}
+                path={path}
+                element={LazyElement}
+              />
             );
           }
         })}
-        <Route>
-          <Route path="*" element={<NoPageFound />} />
-        </Route>
+        <Route path="*" element={<NoPageFound />} />
       </Routes>
     </BrowserRouter>
   );

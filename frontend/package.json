@@ -4,25 +4,33 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=development vite --port 3000 --mode development --host",
+    "dev": "vite --port 3001 --mode development --host",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@hookform/resolvers": "^5.0.1",
     "@mantine/core": "^7.15.2",
     "@mantine/form": "^7.15.2",
     "@mantine/hooks": "^7.15.2",
     "@mantine/modals": "^7.15.2",
     "@mantine/notifications": "^7.15.2",
-    "@tabler/icons-react": "^3.9.0",
+    "@mui/icons-material": "^7.0.1",
+    "@mui/material": "^7.0.1",
     "@reduxjs/toolkit": "^2.5.0",
+    "@tabler/icons-react": "^3.9.0",
     "@tanstack/react-query": "^4.26.1",
     "@tanstack/react-query-devtools": "^4.26.1",
+    "@tanstack/react-table": "^8.21.2",
     "axios": "^1.7.9",
     "dayjs": "^1.11.13",
+    "notistack": "^3.0.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hook-form": "^7.55.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^6.24.1",
     "redux-persist": "^6.0.0",
@@ -41,6 +49,7 @@
     "postcss": "^8.4.49",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
+    "prettier": "3.5.3",
     "vite": "^6.0.5"
   }
 }

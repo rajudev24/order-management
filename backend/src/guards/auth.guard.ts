@@ -3,12 +3,12 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { IS_PUBLIC_KEY } from 'src/decorators';
-import { RedisService } from 'src/modules/redis/redis.service';
-import { Decoder } from 'utils/decoder';
-import { Jwt } from 'utils/jwt';
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { IS_PUBLIC_KEY } from "src/decorators";
+import { RedisService } from "src/modules/redis/redis.service";
+import { Decoder } from "utils/decoder";
+import { Jwt } from "utils/jwt";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -31,17 +31,17 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const response = context.switchToHttp().getResponse();
 
-    const token = request.headers['authorization']?.split(' ')[1];
-    const refreshToken = request.headers['x-refresh-token'];
+    const token = request.headers["authorization"]?.split(" ")[1];
+    const refreshToken = request.headers["x-refresh-token"];
 
     if (!token || !refreshToken) {
       throw new UnauthorizedException();
     }
 
     try {
-      const jwtToken = await this.redisRepository.get('USER-AUTH-TOKEN', token);
+      const jwtToken = await this.redisRepository.get("USER-AUTH-TOKEN", token);
       const jwtRefreshToken = await this.redisRepository.get(
-        'USER-REFRESH-TOKEN',
+        "USER-REFRESH-TOKEN",
         refreshToken,
       );
 
@@ -56,7 +56,7 @@ export class AuthGuard implements CanActivate {
         const { refreshTokenId } = await this.jwt.signRefreshToken(
           decoded.decoded,
         );
-        response.setHeader('x-refresh-token', refreshTokenId);
+        response.setHeader("x-refresh-token", refreshTokenId);
       }
 
       request.user = decoded.decoded;

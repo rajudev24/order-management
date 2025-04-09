@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client';
-import * as argon2 from 'argon2';
+import { PrismaClient } from "@prisma/client";
+import * as argon2 from "argon2";
 
 const prisma = new PrismaClient();
 async function main() {
@@ -7,47 +7,47 @@ async function main() {
     data: [
       {
         id: 1,
-        role: 'SUPER_ADMIN',
-        context: 'MT',
+        role: "SUPER_ADMIN",
+        context: "MT",
       },
       {
         id: 2,
-        role: 'ADMIN',
-        context: 'MT',
+        role: "ADMIN",
+        context: "MT",
       },
       {
         id: 3,
-        role: 'MANAGER',
-        context: 'MT',
+        role: "MANAGER",
+        context: "MT",
       },
       {
         id: 4,
-        role: 'DEVELOPER',
-        context: 'MT',
+        role: "DEVELOPER",
+        context: "MT",
       },
       {
         id: 5,
-        role: 'ADMIN',
-        context: 'CLIENT',
+        role: "ADMIN",
+        context: "CLIENT",
       },
       {
         id: 6,
-        role: 'USER',
-        context: 'CLIENT',
+        role: "USER",
+        context: "CLIENT",
       },
     ],
   });
 
-  const passwordHashed = await argon2.hash('123456');
+  const passwordHashed = await argon2.hash("123456");
 
   const abir = await prisma.users.upsert({
-    where: { email: 'abir@manush.tech' },
+    where: { email: "abir@manush.tech" },
     update: {},
     create: {
-      uid: 'MANUSH-123987',
-      email: 'abir@manush.tech',
-      phone: '01711355057',
-      name: 'Abir Rahman',
+      uid: "MANUSH-123987",
+      email: "abir@manush.tech",
+      phone: "01711355057",
+      name: "Abir Rahman",
       password: passwordHashed,
       userWeight: 10,
       roleId: 1,

@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common';
-import { AuthModule } from './apps/auth/auth.module';
-import { ConfigModule } from '@nestjs/config';
-import { PrismaModule } from './modules/prisma/prisma.module';
-import { SharedModule } from './modules/shared.module';
+import { Module } from "@nestjs/common";
+import { AuthModule } from "./apps/auth/auth.module";
+import { ConfigModule } from "@nestjs/config";
+import { PrismaModule } from "./modules/prisma/prisma.module";
+import { SharedModule } from "./modules/shared.module";
+import { ProductsModule } from "./modules/products/products.module";
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { SharedModule } from './modules/shared.module';
     AuthModule,
     PrismaModule,
     SharedModule,
+    ProductsModule,
   ],
   providers: [AuthModule, PrismaModule],
 })
