@@ -10,13 +10,11 @@ import DatatableButtonGroup from "../../../@manush/components/DataTable/Button/D
 import DatatableReadButton from "../../../@manush/components/DataTable/Button/DatatableReadButton.jsx";
 import DatatableEditButton from "../../../@manush/components/DataTable/Button/DatatableEditButton.jsx";
 import DatatableDeleteButton from "../../../@manush/components/DataTable/Button/DatatableDeleteButton.jsx";
-import {
-  deleteProduct,
-  updateProductStatus,
-} from "../../../services/productsManagement/productService.js";
+import { deleteProduct } from "../../../services/productsManagement/productService.js";
 import useNotiStack from "../../../@manush/hooks/useNotifyStack.js";
 import PromotionDetailsPopup from "./PromotionDetailsPopup.jsx";
 import PromotionAddEditPopup from "./PromotionAddEditPopup.jsx";
+import { updatePromotionStatus } from "../../../services/promotionManagement/promotionService.js";
 
 const PromotionsPage = () => {
   const [selectedItemId, setSelectedItemId] = useState(null);
@@ -26,12 +24,12 @@ const PromotionsPage = () => {
 
   const {
     onFetchData,
-    data: products,
+    data: promotions,
     loading,
     totalCount,
-    refresh: mutateProduct,
+    refresh: mutatePromotion,
   } = useDataTableFetchData({
-    urlPath: apiRoutes.product.PRODUCT_CA,
+    urlPath: apiRoutes.promotion.PROMOTION_CA,
   });
 
   const closeAddEditModal = useCallback(() => {
@@ -56,7 +54,7 @@ const PromotionsPage = () => {
 
   const handleUpdateStatus = async (itemId, row_status) => {
     try {
-      await updateProductStatus(itemId, { row_status: row_status ? 1 : 0 });
+      await updatePromotionStatus(itemId, { row_status: row_status ? 1 : 0 });
       successStack("Promotion status updated Successfully", "success");
     } catch (error) {
       errorStack(error?.response?.data?.message, "error");
@@ -67,7 +65,7 @@ const PromotionsPage = () => {
     try {
       await deleteProduct(itemId);
       successStack("Promotion Deleted Successfully", "success");
-      await mutateProduct();
+      await mutatePromotion();
     } catch (error) {
       errorStack(error?.response?.data?.message, "error");
     }
@@ -76,20 +74,38 @@ const PromotionsPage = () => {
   const columns = useMemo(
     () => [
       {
-        id: "name",
-        accessorKey: "name",
-        header: "Name",
+        id: "title",
+        accessorKey: "title",
+        header: "Title",
       },
 
       {
-        id: "price",
-        accessorKey: "price",
-        header: "Price",
+        id: "discount_type",
+        accessorKey: "discount_type",
+        header: "Discount Type",
       },
       {
-        id: "weight",
-        accessorKey: "weight",
-        header: "Weight",
+        id: "discount_value",
+        accessorKey: "discount_value",
+        header: "Discount Value",
+      },
+      {
+        id: "start_date",
+        accessorKey: "start_date",
+        header: "Start Date",
+        cell: (props) => {
+          let data = props.row.original;
+          return formatDate(data?.start_date);
+        },
+      },
+      {
+        id: "end_date",
+        accessorKey: "end_date",
+        header: "End Date",
+        cell: (props) => {
+          let data = props.row.original;
+          return formatDate(data?.end_date);
+        },
       },
       {
         id: "createdAt",
@@ -131,7 +147,7 @@ const PromotionsPage = () => {
         },
       },
     ],
-    [openAddEditModal, openDetailsModal, products],
+    [openAddEditModal, openDetailsModal, promotions],
   );
 
   return (
@@ -154,7 +170,7 @@ const PromotionsPage = () => {
     >
       <DataTable
         columns={columns}
-        tableData={products}
+        tableData={promotions}
         fetchData={onFetchData}
         loading={loading}
         totalCount={totalCount}
@@ -164,7 +180,7 @@ const PromotionsPage = () => {
           key={1}
           onClose={closeAddEditModal}
           itemId={selectedItemId}
-          refreshDataTable={mutateProduct}
+          refreshDataTable={mutatePromotion}
         />
       )}
       {isOpenDetailsModal && (

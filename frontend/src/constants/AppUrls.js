@@ -6,3 +6,4 @@ export const DASHBOARD = "/dashboard";
 export const PRODUCTS = "/products";
 export const PROMOTIONS = "/promotions";
 export const ORDERS = "/orders";
+export const CREATE_ORDERS = "/create-orders";

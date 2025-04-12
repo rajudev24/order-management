@@ -4,6 +4,7 @@ import * as urls from "./AppUrls";
 import Products from "../pages/Products/Products.jsx";
 import Promotions from "../pages/Promotions/Promotions.jsx";
 import Orders from "../pages/Orders/Orders.jsx";
+import CreateOrders from "../pages/CreateOrder/CreateOrder.jsx";
 
 const route = [
   // UNPROTECTED ROUTES
@@ -39,8 +40,16 @@ const route = [
     showInSidebar: true,
   },
   {
+    path: urls.CREATE_ORDERS,
+    name: "Make Orders",
+    Element: CreateOrders,
+    isIndexUrl: false,
+    isProtected: true,
+    showInSidebar: true,
+  },
+  {
     path: urls.ORDERS,
-    name: "Orders",
+    name: "Ordered Products",
     Element: Orders,
     isIndexUrl: false,
     isProtected: true,

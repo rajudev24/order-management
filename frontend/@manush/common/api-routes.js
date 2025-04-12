@@ -19,4 +19,15 @@ export const apiRoutes = Object.freeze({
     PRODUCT_UPDATE_STATUS_U: (itemId) =>
       `${API_BASE_URL}/products/updateStatus/${itemId}`,
   },
+  promotion: {
+    PROMOTION_CA: `${API_BASE_URL}/promotions`,
+    PROMOTION_RUD: (itemId) => `${API_BASE_URL}/promotions/${itemId}`,
+    PROMOTION_UPDATE_STATUS_U: (itemId) =>
+      `${API_BASE_URL}/promotions/updateStatus/${itemId}`,
+  },
+  orders: {
+    AVAILABLE_PRODUCTS: `${API_BASE_URL}/orders/available-products`,
+    CREATE_ORDER: `${API_BASE_URL}/orders/create-order`,
+    ORDERED_PRODUCTS: `${API_BASE_URL}/orders/ordered-items`,
+  },
 });
