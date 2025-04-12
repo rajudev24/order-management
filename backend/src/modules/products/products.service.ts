@@ -3,6 +3,7 @@ import { PrismaService } from "../prisma/prisma.service";
 import { CreateProductsDto } from "./dto/create-products.dto";
 import { ErrorLogger } from "../../../utils/error-logger";
 import { UpdateProductsDto } from "./dto/update-products.dto";
+import { paginate, PaginatedResult } from "../../helpers/helpers";
 
 @Injectable()
 export class ProductsService {
@@ -11,38 +12,19 @@ export class ProductsService {
     private errorLogger: ErrorLogger,
   ) {}
 
-  async findAll(_paginate: { page?: number; limit?: number }) {
+  async findAll(_paginate: {
+    page?: number;
+    limit?: number;
+  }): Promise<PaginatedResult<any>> {
     try {
-      const page =
-        _paginate.page && _paginate.page > 0 ? Number(_paginate.page) : 1;
-      const limit =
-        _paginate.limit && _paginate.limit > 0
-          ? Math.min(Number(_paginate.limit), 500)
-          : 10;
-      const skip = (page - 1) * limit;
-
-      const [data, total] = await Promise.all([
-        this.prisma.products.findMany({
-          skip,
-          take: limit,
-        }),
-        this.prisma.products.count(),
-      ]);
-
-      const extraData = {
-        total_items: total,
-        total_pages: Math.ceil(total / limit),
-      };
-      console.log("data", data);
-      return {
-        items: data,
-        ...extraData,
-        paginate: {
-          total: total,
-          per_page: limit,
-          current_page: page,
+      return await paginate(
+        this.prisma.products.findMany.bind(this.prisma.products),
+        this.prisma.products.count.bind(this.prisma.products),
+        { page: _paginate.page, limit: _paginate.limit },
+        {
+          orderBy: { createdAt: "desc" },
         },
-      };
+      );
     } catch (error) {
       await this.errorLogger.errorlogger({
         errorMessage: "An error occurred while fetching products",

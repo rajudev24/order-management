@@ -35,6 +35,7 @@ model Users {
 
   roleId   Int
   roleInfo Roles @relation(fields: [roleId], references: [id])
+  orders   Orders[]
 
   @@map("users")
 }
@@ -49,14 +50,73 @@ model Roles {
 }
 
 model Products {
-  id   Int     @id @default(autoincrement())
-  name String
+  id          Int      @id @default(autoincrement())
+  name        String
   description String
-  price Float
-  weight Float
-  row_status String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now()) @updatedAt
+  price       Float
+  weight      Float
+  row_status  String   @default("1")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  promotion   Promotions? @relation(fields: [promotionId], references: [id])
+  promotionId Int?
+  orderItems  OrderItem[]
 
   @@map("products")
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+  WEIGHTED
+}
+
+model Promotions {
+  id            Int          @id @default(autoincrement())
+  title         String
+  description   String?
+  discount_type DiscountType
+  start_date    DateTime
+  end_date      DateTime
+  row_status    String       @default("1")
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  discount_value Float?
+  min_weight    Float?
+  max_weight    Float?
+  unit_price    Float?
+  products      Products[]
+
+  @@map("promotions")
+}
+
+model Orders {
+  id            Int          @id @default(autoincrement())
+  subtotal      Float?
+  total_discount Float?
+  grand_total   Float?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  userId        Int
+  user          Users        @relation(fields: [userId], references: [id])
+  orderItems    OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id         Int      @id @default(autoincrement())
+  quantity   Int      @default(1)
+  price      Float
+  discount   Float?   @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  orderId    Int
+  order      Orders    @relation(fields: [orderId], references: [id])
+  productId  Int
+  product    Products  @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
 }
